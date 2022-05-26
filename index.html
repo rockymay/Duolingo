@@ -1,0 +1,106 @@
+
+
+    
+<html>
+<body>
+
+<div class="form-horizontal">
+
+    <div class="form-group">
+
+        <hr />
+        <div class="text-center">
+            <a class="small btn btn-light border" href="/Notes/Duo" style="float:left">NOTES</a>
+            <button type="submit" value="Clear " id="clearInput" class="small btn btn-primary">CLEAR</button>
+            <button type="submit" value="Insert " id="insertClick" class="small btn btn-info " style="float: right;">INSERT</button>
+        </div>
+
+    </div>
+    <br />
+    <form name="searchbox" class="form-group">
+        <div>
+            <textarea class="form-control text-box" id="myInput" name="myInput" type="text" style="height:180px; min-width: 100%" placeholder="What you wanna search?"></textarea>
+
+        </div>
+    </form>
+
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Submit " id="noteSubmitted" class="btn btn-success col-sm-12 col-md-12 center" style="min-width: 100%" />
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // if press enter key, the search will be saved in system
+    $("#myInput").keyup(function (event) {
+        event.preventDefault();
+        if (event.which === 13) {
+            setTimeout(function () {
+                $("#insertClick").click();
+            }, 100);
+            setTimeout(function () {
+                $("#noteSubmitted").click();
+            }, 1500);
+        }
+
+    });
+    $("#insertClick").click(function () {
+
+        $.ajax(
+            {
+
+                type: "POST", //HTTP POST Method
+                url: "/Notes/InsertDuo/", // Controller/View
+                data: { //Passing data
+                    Id: 0,
+                    Pubdate: "2001/01/01",
+                    Priority: 0,
+                    Content: $("#myInput").val(),
+                    Category: "Duolingo"
+                },
+                success: function (result) {
+                    setTimeout(function () {
+                        $("#clearInput").click();
+                    }, 3000);
+
+
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                },
+                traditional: true
+            });
+
+    });
+    $("#noteSubmitted").click(function () {
+
+        var val = $("#myInput").val();
+        
+        val = val.replace(/\r\n|\n|\r/gm, "");
+        val = val.replace("X20Translate this sentence", "");
+        val = val.replace("XTranslate this sentence", "");
+        val = val.replace("Translate this sentence", "");
+        val = val.replace("X20Complete the translation", "");
+        val = val.replace("XComplete the translation", "");
+        val = val.replace("Complete the translation", "");
+   
+        document.searchbox.reset();
+        gotoUrl = "https://www.google.com/search?q=" + val + "  site:duolingo.com";
+        window.open(gotoUrl, "_self");
+    });
+    $("#clearInput").click(function () {
+        document.searchbox.reset();
+    });
+</script>
+
+
+
+
+
+    
+</body>
+</html>
